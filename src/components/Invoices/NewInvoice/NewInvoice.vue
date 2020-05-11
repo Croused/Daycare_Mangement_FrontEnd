@@ -22,7 +22,7 @@
           <b-col class="parentInfo">
             <div class="">Name: {{getInvoiceParentInfo.firstName}} {{getInvoiceParentInfo.lastName}}</div>
             <div class="">Address: {{getInvoiceParentInfo.address}}</div>
-            <div class="">Email Address: {{getInvoiceParentInfo.email}}</div>
+            <div class="">Emaail Address: {{getInvoiceParentInfo.email}}</div>
           </b-col>
           <b-col>
             <b-row>
