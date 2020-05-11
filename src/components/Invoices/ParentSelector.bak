@@ -1,0 +1,51 @@
+<template>
+    <div class="parentSelectBox" 
+         v-bind:class="{ parentSelectBoxSelect : this.parent.selected }"
+         v-on:click="selectParent"
+         v-bind:id="this.parent.parentID"    
+    >
+        {{ this.parent.firstName }} {{ this.parent.lastName }}
+    </div>
+</template>
+
+<script>
+export default {
+    name: "ParentSelector",
+    props:[
+        "parent"
+    ],
+  
+    methods:{
+        selectParent(e){
+            
+            let parentID = e.target.id;
+            this.$emit('select-parent', parentID);
+        }
+    },
+    //  created(){
+    //     console.log(this.parent.selected)
+       
+    // }
+}
+</script>
+
+<style scoped>
+    
+ 
+
+    
+    .parentSelectBox{
+        border: 1px solid;
+        font-size: 1.25em;
+        height: 2em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .parentSelectBox:hover{
+        background-color: rgba(195, 214, 237, 1);
+    }
+    .parentSelectBoxSelect{
+        background-color: rgba(170, 200, 226, 1);
+    }
+</style>

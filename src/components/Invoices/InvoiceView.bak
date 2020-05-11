@@ -1,0 +1,46 @@
+<template>
+    <div class="invoiceView">
+        <div class="parentsName" >
+            {{ getCurrentParentData.parentID }}
+            <!-- {{ this.currentParent.firstName }} {{ this.currentParent.lastName }} -->
+            {{getCurrentParentData.firstName}} {{ getCurrentParentData.lastName}}
+            </div>
+        <div class="invoiceData">
+            Total Balance $
+            Past Due Balance $
+        </div>
+            
+    </div>
+
+</template>
+
+
+<script>
+import { mapGetters, mapActions } from 'vuex';
+export default {
+    name:"InvoiceView",
+    props:[
+        "currentParentID"
+    ],
+    methods:{
+        ...mapActions(['updateParentDate'])
+    },
+    computed: mapGetters(['getCurrentParentData']),
+    beforeUpdate(){
+        console.log(this.currentParentID);
+        this.updateParentDate(this.currentParentID);
+    },
+
+
+}
+</script>
+
+
+
+<style scoped>
+    .parentsName{
+        text-align:center;
+        font-size:2em;
+    }
+
+</style>

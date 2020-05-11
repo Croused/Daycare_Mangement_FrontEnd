@@ -1,0 +1,81 @@
+<template>
+    <div class="invoiceApp">
+        <!-- <div class="invoiceHeader">Invoices</div> -->
+        <div class="invoiceAppArea">
+            <!-- <ParentSelector v-bind:parents="this.parentData"
+                            v-on:select-parent="selectParent"
+            /> -->
+            <div class="parentSelectorArea">
+                <ParentSelector v-bind:key="parent.parentID"
+                                v-for="parent of allParents"
+                                
+                                v-bind:parent="parent"
+                                v-on:select-parent= selectParentID       
+                />
+                 <!--  -->
+            </div>
+            <InvoiceView v-bind:currentParentID="this.currentParent"/>
+        </div>
+    </div>
+</template>
+
+<script>
+import { mapGetters, mapActions } from 'vuex';
+
+import ParentSelector from "./ParentSelector.vue";
+import InvoiceView from "./InvoiceView.vue";
+
+export default {
+    name:"Invoices",
+    components:{
+        ParentSelector,
+        InvoiceView
+        
+    },
+    data(){
+        return{
+            currentParent:-1,
+        }
+    },
+    methods:{
+        selectParentID(parentID){
+            this.currentParent = parseInt(parentID);
+            this.selectParent(parentID);
+        },
+        ...mapActions(['initializeParents', 'selectParent']),
+    },
+    computed: mapGetters(['allParents']),
+    created(){
+        this.initializeParents(); 
+    },
+    
+}
+</script>
+
+<style scoped>
+    .invoiceApp{
+        border: 1px solid;
+        grid-column: 2/3;
+        grid-row: 2/3;
+        padding: 0.1em;
+    }
+    .invoiceHeader{
+        width:100%;
+        text-align: center;
+        font-size: 2em;
+        font-weight: 600;
+        border: 1px solid;
+    }
+    .invoiceAppArea{
+        border: 1px solid;
+        height: 94%;
+        display: grid;
+        grid-template-columns: minmax(200px, 1fr) 10fr;
+    }
+
+    .parentSelectorArea{
+        border: 1px solid;
+        grid-column: 1/2;
+        height: 100%;
+    }
+</style>

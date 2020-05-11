@@ -1,0 +1,47 @@
+//import axios from 'axios';
+//import Vue from 'vue';
+
+const state = {
+    currentParent:{
+       parentID: 3,
+       lastName: 'Capson',
+       firstName: 'Jennifer',
+       email: 'asdasd@asdasd.com',
+       address: '1231 asdasdasd',
+       comments: "",
+       status: 'Active' 
+    }
+
+};
+
+
+const getters = {
+    getCurrentParentData: state => state.currentParent,
+};
+
+
+const actions = {
+    updateParentDate: ({commit},parentID) => {
+       // console.log(parentID);
+        let payload = {parentID: parentID};
+        commit('updateParent', payload);
+    }
+    
+};
+
+const mutations = {
+    updateParent:(state, payload) => {
+        console.log(payload);
+        console.log(state);
+    }
+
+};
+
+
+
+export default {
+    state,
+    getters,
+    actions,
+    mutations
+}
