@@ -5,7 +5,18 @@
       @reset="onReset($event)"
       class="formArea"
     >
-      
+      <div>
+        <b-button 
+          variant="outline-success"
+          class="saveCancelBtn"
+          @click="onSave"
+        >Save</b-button>
+        <b-button 
+          variant="outline-danger"
+          class="saveCancelBtn"
+          @click="onCancel"
+        >Cancel</b-button>
+      </div>
       <div class="clientSelectArea">
         <b-form-select class="mb-3 clientSelect" @change="selectNewParent($event)">
           <b-form-select-option 
@@ -22,7 +33,7 @@
           <b-col class="parentInfo">
             <div class="">Name: {{getInvoiceParentInfo.firstName}} {{getInvoiceParentInfo.lastName}}</div>
             <div class="">Address: {{getInvoiceParentInfo.address}}</div>
-            <div class="">Emaail Address: {{getInvoiceParentInfo.email}}</div>
+            <div class="">Email Address: {{getInvoiceParentInfo.email}}</div>
           </b-col>
           <b-col>
             <b-row>
@@ -99,12 +110,25 @@
         event.preventDefault();
         console.log("Reset was pushed");
       },
-      ...mapActions(['initializeParents', 'initializeParent', 'updateParentInfo', 'intializePDBalance', 'updateDisplayBalance']),
+      onSave(){
+        console.log("save invoice");
+      },
+      onCancel(){
+        console.log("cancel Invoice");
+        this.initializeParents();
+        this.initializeParent();
+        this.intializePDBalance();
+        this.initializeInvoiceLines();
+        
+      },
+
+      ...mapActions(['initializeParents', 'initializeParent', 'updateParentInfo', 'intializePDBalance', 'updateDisplayBalance', 'initializeInvoiceLines']),
     },
     created(){
       this.initializeParents();
       this.initializeParent();
       this.intializePDBalance();
+      this.initializeInvoiceLines();
     }  
       
   }
@@ -170,6 +194,9 @@
     justify-content: center;
     align-items: center;
     
+  }
+  .saveCancelBtn{
+    margin-right:1em;
   }
 
 </style>

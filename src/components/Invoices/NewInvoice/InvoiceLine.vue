@@ -14,19 +14,25 @@
        Week Of {{invoiceLine.startDate}}
       </div>
       <div class="deleteButton">
-        <b-button variant="outline-danger">X</b-button>
+        <b-button variant="outline-danger" @click="removeLine">X</b-button>
       </div>
   </b-row>
 </template>
 
 
 <script>
-import { mapGetters } from 'vuex';
+import { mapGetters, mapActions } from 'vuex';
 export default {
   name:'InvoiceLine',
   props:[
     'invoiceLine',
   ],
+  methods:{
+    ...mapActions(['removeInvoiceLine']),
+    removeLine(){
+      this.removeInvoiceLine(this.invoiceLine.invoiceLineID)
+    },
+  },
   computed: {
     ...mapGetters(['getChildren', 'getCareTypes']),
   }

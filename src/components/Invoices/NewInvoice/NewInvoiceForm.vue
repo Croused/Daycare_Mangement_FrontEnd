@@ -6,7 +6,7 @@
           <b-col class="optionSelectCol">
             <b-row>
               Select Child
-              <b-form-select>
+              <b-form-select v-model="childID">
                 <b-form-select-option
                   v-for="child in getChildren"
                   :key="child.childID"
@@ -18,7 +18,7 @@
             </b-row>
             <b-row>
               Select Care Type
-              <b-form-select>
+              <b-form-select v-model="careTypeID">
                 <b-form-select-option
                   v-for="careType in getCareTypes"
                   :key="careType.careTypeID"
@@ -33,7 +33,7 @@
                 Number Of Days:
               </b-col>
               <b-col>
-                <b-form-spinbutton min="1" max="5" value=1></b-form-spinbutton>
+                <b-form-spinbutton min="1" max="5" value=1 v-model="qty"></b-form-spinbutton>
               </b-col>
 
 
@@ -45,6 +45,7 @@
               <b-form-datepicker 
                 :date-disabled-fn="dateDisabled"
                 :date-format-options="{ year: 'numeric', month: 'short', day: '2-digit', weekday: 'short' }"
+                v-model="startDate"
               >
               </b-form-datepicker>
             </b-row>
@@ -53,12 +54,13 @@
               <b-form-datepicker 
                 :date-disabled-fn="dateDisabled"
                 :date-format-options="{ year: 'numeric', month: 'short', day: '2-digit', weekday: 'short' }"
+                v-model="endDate"
               >
               </b-form-datepicker>
             </b-row>
             <b-row>
               <b-col class="formBtns">
-                <b-button variant="success">Add</b-button>
+                <b-button variant="success" @click="addLine">Add</b-button>
               </b-col>
               <b-col  class="formBtns">
                 <b-button variant="info">Reset</b-button>
@@ -79,14 +81,19 @@
     name:"NewInvoiceForm",
     data(){
       return{
-        
+        childID:6,
+        careTypeID:5,
+        qty:4,
+        startDate:'',
+        endDate:'',
+        lineCost: 1
       };
     },
     computed:{
       ...mapGetters(['getInvoice', 'getChildren', 'getCareTypes'])
     },
     methods:{
-      ...mapActions(['initializeChildren', 'initializeCareTypeList']),
+      ...mapActions(['initializeChildren', 'initializeCareTypeList', 'addInvoiceLine']),
       dateDisabled(ymd, date) {
         // Disable weekends (Sunday = `0`, Saturday = `6`) and
         // disable days that fall on the 13th of the month
@@ -94,6 +101,19 @@
         const day = date.getDate()
         // Return `true` if the date should be disabled
         return weekday === 0 || weekday === 6 || day === 13
+      },
+      addLine(){
+        this.lineCost = this.getCareTypes.find(type =>{ return type.careTypeID === this.careTypeID}).cost * this.qty;
+        let tempObj = { 
+          invoiceLineID:(-1)*Math.round(((Math.random()*1000000))),
+          childID: this.childID,
+          careTypeID: this.careTypeID,
+          careQuantity: this.qty,
+          startDate: this.startDate,
+          endDate: this.endDate,
+          lineCost: this.lineCost
+        }
+        this.addInvoiceLine(tempObj);
       }
     },
     created(){

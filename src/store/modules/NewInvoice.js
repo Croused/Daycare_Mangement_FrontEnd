@@ -13,7 +13,7 @@ const state = {
         address: "",
     },
     children:[],
-    pastdueBalance:10.00,
+    pastdueBalance:0,
     currentInvoice:{
         invoiceID: -1,
         invoiceDate: '2001-01-01',
@@ -22,27 +22,27 @@ const state = {
         comments: 'invoice Comments',
         invoiceStatus:1,
         invoiceLines:[
-            {
-                invoiceLineID: 0,
-                childID: 3,
-                careTypeID: 1,
-                careQuantity: 5,
-                startDate: '2001-01-03',
-                endDate: '2001-01-04',
-                lineCost: 175.00,
-                comments:'line comments',        
-            },
-            {
-                invoiceLineID: 1,
-                childID: 3,
-                childFname: 3,
-                careTypeID: 1,
-                careQuantity: 4,
-                startDate: '2001-01-05',
-                endDate: '2001-01-06',
-                lineCost: 140.00,
-                comments:'line comments',        
-            }
+            // {
+            //     invoiceLineID: 0,
+            //     childID: 3,
+            //     careTypeID: 1,
+            //     careQuantity: 5,
+            //     startDate: '2001-01-03',
+            //     endDate: '2001-01-04',
+            //     lineCost: 175.00,
+            //     comments:'line comments',        
+            // },
+            // {
+            //     invoiceLineID: 1,
+            //     childID: 3,
+            //     childFname: 3,
+            //     careTypeID: 1,
+            //     careQuantity: 4,
+            //     startDate: '2001-01-05',
+            //     endDate: '2001-01-06',
+            //     lineCost: 140.00,
+            //     comments:'line comments',        
+            // }
         ],
     },
     careTypeList:[],
@@ -71,11 +71,12 @@ const actions = {
         };
         commit('updateParentState', blankParent);
     },
-    intializePDBalance:({commit})=>{
+    intializePDBalance:({ commit, dispatch })=>{
         let payload = {
             balanceDue: 0,
         }
         commit('updatePastDueBalance', payload);
+        dispatch('calculateNewBalance');
     },
     initializeChildren:({commit})=>{
         let childObjArray = [
@@ -86,7 +87,7 @@ const actions = {
             }
         ]
 
-        commit('updateChildrenList', childObjArray)
+        commit('updateChildren', childObjArray)
 
 
     },
@@ -97,6 +98,11 @@ const actions = {
             })
             .catch(error=>{console.log(error)});
 
+    },
+    initializeInvoiceLines:({commit, dispatch})=>{
+        let newInvoiceLines=[];
+        commit('updateAllInvoiceLines', newInvoiceLines);
+        dispatch('calculateNewBalance');
     },
     updateParentInfo: ({ commit, dispatch }, parentID) => {
         
@@ -144,9 +150,8 @@ const actions = {
 
     },
     updateChildrenList: ({ commit }, parentID) => {
-        console.log(parentID);
         let requestPayload = {
-            'parentID': 3//parentID
+            'parentID': parentID
         };
         const options = {
             method: 'POST',
@@ -163,6 +168,26 @@ const actions = {
         .catch(error=>{console.log(error)});
         
     },
+    addInvoiceLine:({commit, dispatch}, invoiceLine)=>{
+        
+        commit('addInvoiceLine', invoiceLine);
+        dispatch('calculateNewBalance');
+
+    },
+    calculateNewBalance: ({commit})=>{
+        let totalBalance = 0;
+        state.currentInvoice.invoiceLines.forEach(line=>{
+            totalBalance += line.lineCost;
+        })
+        commit('updateNewBalance', totalBalance);
+    },
+    removeInvoiceLine:({commit, dispatch}, invoiceLineID)=>{
+        let newInvoiceLines = state.currentInvoice.invoiceLines.filter(line=>{
+            return line.invoiceLineID != invoiceLineID;
+        })
+        commit('updateAllInvoiceLines', newInvoiceLines);
+        dispatch('calculateNewBalance');
+    },
 };
 
 const mutations = {
@@ -177,7 +202,16 @@ const mutations = {
     },
     updateCareTypeList:(state, payload)=>{
         state.careTypeList = payload;
-    }
+    },
+    addInvoiceLine:(state, payload)=>{
+        state.currentInvoice.invoiceLines.push(payload);
+    },
+    updateAllInvoiceLines:(state, payload)=>{
+        state.currentInvoice.invoiceLines = payload;
+    },
+    updateNewBalance:(state, payload)=>{
+        state.currentInvoice.invoiceBalance = payload;
+    },
 
 };
 
